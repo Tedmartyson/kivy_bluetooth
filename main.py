@@ -7,53 +7,24 @@ from kivy.app import App
 # The GridLayout arranges children in a matrix. 
 from kivy.uix.gridlayout import GridLayout 
 
-# If we will not import this module 
-# It will through the error 
+# Providing a Slider
 from kivy.uix.slider import Slider 
 
 # The Label widget is for rendering text. 
 from kivy.uix.label import Label
+
+# The Button widget provides buttons.
 from kivy.uix.button import Button
 
+# Android logger
 from kivy.logger import Logger
-from jnius import autoclass
 
 # Property that represents a numeric value 
 # within a minimum bound and / or maximum 
 # bound – within a numeric range. 
 from kivy.properties import NumericProperty
 
-# class in which we are defining the 
-# sliders and its effects 
-
-
-class Bluetooth:
-	BluetoothAdapter = autoclass('android.bluetooth.BluetoothAdapter')
-	BluetoothDevice = autoclass('android.bluetooth.BluetoothDevice')
-	BluetoothSocket = autoclass('android.bluetooth.BluetoothSocket')
-	InputStreamReader = autoclass('java.io.InputStreamReader')
-	BufferedReader = autoclass('java.io.BufferedReader')
-	UUID = autoclass('java.util.UUID')
-
-	def __init__(self, name):
-		self.name = name
-
-	def get_socket_stream(self):
-		paired_devices = self.BluetoothAdapter.getDefaultAdapter().getBondedDevices().toArray()
-		socket, recv_stream, send_stream = None, None, None
-		for device in paired_devices:
-			if device.getName() == self.name:
-				socket = device.createRfcommSocketToServiceRecord(
-					self.UUID.fromString("00001105-0000-1000-8000-00805f9b34fb"))
-
-				reader = self.InputStreamReader(socket.getInputStream(), 'US-ASCII')
-
-				recv_stream = self.BufferedReader(reader)
-				send_stream = socket.getOutputStream()
-				break
-		socket.connect()
-		return recv_stream, send_stream
-
+from custom_bluetooth import Bluetooth
 
 
 class WidgetContainer(GridLayout): 
